@@ -1,6 +1,7 @@
 # Data and Methods
 
-The microsimulated data contains, 19 variables, 1 of which was determined after generating the microsimulated data (Holiday_type). This is not explicitly defined in the microsimulated data, therefore there are some assumptions that were made to classify the Holiday destinations as either a city or beach, for instance, geographical proximity of the destination airport city to a beach, in this case geographical proximity was considered a proxy for holiday type. As such, out of the 75 unique holiday destinations, 61 are beach holidays and 14 are city holidays. Person_id is a variable describing the unique id of each person in the study area. Zone is a geographical variable that contains the output are classification in Leeds. Oac_group describes the output area classification groups that a person belongs to, the classifications are: “Urbanites”, “Suburbanites”, “Rural Residents”, “Multicultural Metropolitans”, “Hard-pressed Living”, “Ethnicity Central”, “Cosmopolitans” and “Constrained City Dwellers”, but as a factor containing 8 levels each corresponding to a supergroup. The Sex variables describes the sex of the individual, it is either “f” for female or “m” for male. Age_band refers to the age bracket that the individual belongs to, it ranges from “a24under” to “a65over”. Number_children refers to the number of children that the individual has, it ranges from 0 to 4. Household_income refers to the household income of each household, it ranges from “0-10K”, to “81K Plus”, and includes a “Not Answered” category. Overseas_airport refers to the name of the overseas airport the holidaymaker is traveling to. UK_airport refers to the name of the UK airport the holidaymaker is traveling from. Satisfaction_overall, refers to how satisfied the holidaymaker was with their most recent holiday, it ranges from “1_poor” to “4_excellent”. Age_sex refers to a combination of the Sex and Age_band variables, so for instance a female aged between 24-34 would be: “fa24to34”, in contrast a male in the same age bracket would be: “ma24to34”. Similar to Oac_group, the Supergroup_name contains the output area classification group names, however not as factors, but rather, as characters. Dest_airport_name refers to the name of the airport the holidaymakers is traveling to. Dest_airport_city refers to the name of the city the destination airport is in. Dest_airport_country refers to the name of the country the holidaymaker is traveling to. Orig_airport_name refers to the name of the airport the holidaymaker is traveling from. Orig_airport_city refers to the name of the city the origin airport is in. Finally, Holiday_type refers to the type of holiday, classified as either “Beach” or “City” holiday. This is summarised below
+The microsimulated data contains, 19 variables, 1 of which was determined after generating the microsimulated data (Holiday_type). This is not explicitly defined in the microsimulated data, therefore there are some assumptions that were made to classify the Holiday destinations as either a city or beach, for instance, geographical proximity of the destination airport city to a beach, in this case geographical proximity was considered a proxy for holiday type. As such, out of the 75 unique holiday destinations, 61 are beach holidays and 14 are city holidays. Person_id is a variable describing the unique id of each person in the study area. Zone is a geographical variable that contains the output are classification in Leeds. Oac_group describes the output area classification groups that a person belongs to, the classifications are: “Urbanites”, “Suburbanites”, “Rural Residents”, “Multicultural Metropolitans”, “Hard-pressed Living”, “Ethnicity Central”, “Cosmopolitans” and “Constrained City Dwellers”, but as a factor containing 8 levels each corresponding to a supergroup. The Sex variables describes the sex of the individual, it is either “f” for female or “m” for male. Age_band refers to the age bracket that the individual belongs to, it ranges from “a24under” to “a65over”. Number_children refers to the number of children that the individual has, it ranges from 0 to 4. Household_income refers to the household income of each household, it ranges from “0-10K”, to “81K Plus”, and includes a “Not Answered” category. Overseas_airport refers to the name of the overseas airport the holidaymaker is traveling to. UK_airport refers to the name of the UK airport the holidaymaker is traveling from. Satisfaction_overall, refers to how satisfied the holidaymaker was with their most recent holiday, it ranges from “1_poor” to “4_excellent”. Age_sex refers to a combination of the Sex and Age_band variables, so for instance a female aged between 24-34 would be: “fa24to34”, in contrast a male in the same age bracket would be: “ma24to34”. Similar to Oac_group, the Supergroup_name contains the output area classification group names, however not as factors, but rather, as characters. Dest_airport_name refers to the name of the airport the holidaymakers is traveling to. Dest_airport_city refers to the name of the city the destination airport is in. Dest_airport_country refers to the name of the country the holidaymaker is traveling to. Orig_airport_name refers to the name of the airport the holidaymaker is traveling from. Orig_airport_city refers to the name of the city the origin airport is in. Finally, Holiday_type refers to the type of holiday, classified as either “Beach” or “City” holiday. This is summarised below:
+
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(kableExtra)
@@ -36,7 +37,7 @@ head(simulated_oac_age_sex)
 
 One of the key assumptions made when generating the microsimulated data, was that the data is fully representative, however is this really the case? It is natural that certain output areas in Leeds will be better represented by the individual-level survey, in comparison to others. The figure below demonstrates the model uncertainty, the extent to which oversampling has occurred. Oversampling in this context refers to cases in which the same respondent has been reassigned to the same Output area several times. The figure below demonstrates the distribution of the Output Areas that are not as well represented by the individual-level survey data.
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Simulation Oversampling"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10,,,fig.cap="Simulation Oversampling"}
 # Generate OA-level summary statistics on weights.
 temp_weights_summary <- weights_oac_age_sex %>%
   # Create row_index variable.
@@ -79,7 +80,7 @@ plot1 <- oa_boundaries %>%
     coord_sf(crs=st_crs(oa_boundaries), datum=NA)+
     scale_fill_distiller(palette="Blues", direction=1, guide=FALSE)+
     theme(axis.title=element_blank())+
-    facet_wrap(~statistic_type, nrow=1)+theme_minimal()
+    facet_wrap(~statistic_type, nrow=1)+theme_void()
 # create plot
 plot2 <- oa_level_summary %>%
   # Rescale summary stats between 0 and 1 for local scale on facet.
@@ -92,10 +93,14 @@ plot2 <- oa_level_summary %>%
   ggplot(aes(x=statistic_value_rescale, fill=..x..))+
   geom_histogram(colour="#636363", size=0.1, bins=10) +
   facet_wrap(~statistic_type, nrow=1) +
-  scale_fill_distiller(palette="Blues", direction=1, guide=FALSE)+ ylab("")+ xlab("")+theme_void()
+  scale_fill_distiller(palette="Blues", direction=1, guide=FALSE)+theme_minimal()+theme(
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+)+ylab("Count")+xlab("Statistic Value Rescale")
 # Display in plots pane.
 grid.arrange(plot1,plot2, nrow=2)
 ```
+
 
 By grouping the weights used to generate the microsimulated data, the extent of oversampling can be visualised. There seems to be a higher concentration of oversampling, particularly near the city region and its immediate periphery, as evident by the darker shades of blue in the choropleth map. Similarly given the scope of the report, it would be useful to breakdown the top locations by holiday type. The figure below shows the top destinations by holiday type.
 

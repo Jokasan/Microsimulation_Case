@@ -15,6 +15,8 @@ Finally, the fourth assumption is that the constraints and micro/individual leve
 In specific, using microsimulation to estimate a population-level dataset of holiday-making behaviours at the household level in Leeds.
 The individual-level dataset is of a survey describing holiday making behaviours of individuals.
 In contrast, the constraints data are from the 2011 Census and represent the output area classification in Leeds.
-These data are then used and applied using microsimulation to obtain a population- level dataset of holiday making behaviours at the household level in Leeds. The scope of this report is to focus on destinations classified as city holidays, specifically city destinations in the United States.
+These data are then used and applied using microsimulation to obtain a population- level dataset of holiday making behaviours at the household level in Leeds. 
+
+The scope of this report is to focus on destinations classified as city holidays, specifically city destinations in the United States.
 The aim is to profile consumers holidaying to these destinations, in order to underpin a targeted marketing campaign.
 The report is structured as follows: Chapter 2 will explore the data and methods used, taking into account the scope of the study. Chapter 3 will focus on profiling the target market. Finally, Chapter 4 will conclude, synthesising over the findings and establishing the customers to be targeted with a marketing campaign.
