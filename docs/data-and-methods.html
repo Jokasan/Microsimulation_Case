@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Data and Methods | Predictive Analytics- Spatial Microsimulation to Identify Holidaymaking Behaviours in Leeds</title>
+  <meta name="description" content="This is an assignment completed for the GEOG5042M Predictive Analytics module, part of the MSc Consumer Analytics and Marketing Strategy, Jan 2021 - Jan 2022 cohort." />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Data and Methods | Predictive Analytics- Spatial Microsimulation to Identify Holidaymaking Behaviours in Leeds" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is an assignment completed for the GEOG5042M Predictive Analytics module, part of the MSc Consumer Analytics and Marketing Strategy, Jan 2021 - Jan 2022 cohort." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Data and Methods | Predictive Analytics- Spatial Microsimulation to Identify Holidaymaking Behaviours in Leeds" />
+  
+  <meta name="twitter:description" content="This is an assignment completed for the GEOG5042M Predictive Analytics module, part of the MSc Consumer Analytics and Marketing Strategy, Jan 2021 - Jan 2022 cohort." />
+  
+
+<meta name="author" content="Nils Indreiten" />
+
+
+<meta name="date" content="2021-08-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="intro.html"/>
+<link rel="next" href="results.html"/>
+<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Predictive Analytics- Spatial Microsimulation to Identify Holidaymaking Behaviours in Leed</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Executive Summary</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="data-and-methods.html"><a href="data-and-methods.html"><i class="fa fa-check"></i><b>3</b> Data and Methods</a></li>
+<li class="chapter" data-level="4" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>4</b> Results</a></li>
+<li class="chapter" data-level="5" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>5</b> Conclusion</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="conclusion.html"><a href="conclusion.html#future-directions"><i class="fa fa-check"></i><b>5.1</b> Future directions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Predictive Analytics- Spatial Microsimulation to Identify Holidaymaking Behaviours in Leeds</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-and-methods" class="section level1" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Data and Methods</h1>
+<p>The microsimulated data contains, 19 variables, 1 of which was determined after generating the microsimulated data (Holiday_type). This is not explicitly defined in the microsimulated data, therefore there are some assumptions that were made to classify the Holiday destinations as either a city or beach, for instance, geographical proximity of the destination airport city to a beach, in this case geographical proximity was considered a proxy for holiday type. As such, out of the 75 unique holiday destinations, 61 are beach holidays and 14 are city holidays. Person_id is a variable describing the unique id of each person in the study area. Zone is a geographical variable that contains the output are classification in Leeds. Oac_group describes the output area classification groups that a person belongs to, the classifications are: “Urbanites,” “Suburbanites,” “Rural Residents,” “Multicultural Metropolitans,” “Hard-pressed Living,” “Ethnicity Central,” “Cosmopolitans” and “Constrained City Dwellers,” but as a factor containing 8 levels each corresponding to a supergroup. The Sex variables describes the sex of the individual, it is either “f” for female or “m” for male. Age_band refers to the age bracket that the individual belongs to, it ranges from “a24under” to “a65over.” Number_children refers to the number of children that the individual has, it ranges from 0 to 4. Household_income refers to the household income of each household, it ranges from “0-10K,” to “81K Plus,” and includes a “Not Answered” category. Overseas_airport refers to the name of the overseas airport the holidaymaker is traveling to. UK_airport refers to the name of the UK airport the holidaymaker is traveling from. Satisfaction_overall, refers to how satisfied the holidaymaker was with their most recent holiday, it ranges from “1_poor” to “4_excellent.” Age_sex refers to a combination of the Sex and Age_band variables, so for instance a female aged between 24-34 would be: “fa24to34,” in contrast a male in the same age bracket would be: “ma24to34.” Similar to Oac_group, the Supergroup_name contains the output area classification group names, however not as factors, but rather, as characters. Dest_airport_name refers to the name of the airport the holidaymakers is traveling to. Dest_airport_city refers to the name of the city the destination airport is in. Dest_airport_country refers to the name of the country the holidaymaker is traveling to. Orig_airport_name refers to the name of the airport the holidaymaker is traveling from. Orig_airport_city refers to the name of the city the origin airport is in. Finally, Holiday_type refers to the type of holiday, classified as either “Beach” or “City” holiday. This is summarised below</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:left;">
+Detail
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Person_id
+</td>
+<td style="text-align:left;">
+Unique id of respondentaccross the study area.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Zone
+</td>
+<td style="text-align:left;">
+The output area classification zone in Leeds.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oac_grp
+</td>
+<td style="text-align:left;">
+Description of the super group the output area belongs to.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sex
+</td>
+<td style="text-align:left;">
+Sex of the respondent
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age_band
+</td>
+<td style="text-align:left;">
+Age band the respondent belongs to.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number_children
+</td>
+<td style="text-align:left;">
+The number of children the respondent has
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Household_income
+</td>
+<td style="text-align:left;">
+The household income of each respndent
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Overseas_airport
+</td>
+<td style="text-align:left;">
+The name of the overseas airport.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UK_airport
+</td>
+<td style="text-align:left;">
+Name of the airport in the UK.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Satisafaction_overall
+</td>
+<td style="text-align:left;">
+Level of satisfaction with most recent holiday.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age_sex
+</td>
+<td style="text-align:left;">
+A combination of the sex and age band variables.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Supergroup_name
+</td>
+<td style="text-align:left;">
+The name of the supergroup the respondent belongs to.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dest_airport_name
+</td>
+<td style="text-align:left;">
+The name of the destination airport.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dest_airport_city
+</td>
+<td style="text-align:left;">
+The name of the city the destination airport is in.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dest_airport_country
+</td>
+<td style="text-align:left;">
+The name of the country the destination airport is in.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Orig_airport_name
+</td>
+<td style="text-align:left;">
+The name of the origin airport.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Orig_airport_city
+</td>
+<td style="text-align:left;">
+The name of the city the origin airport is in.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holiday_type
+</td>
+<td style="text-align:left;">
+The name of the city the origin airport is in in.
+</td>
+</tr>
+</tbody>
+</table>
+<p>To get a sense of the nature of the data, the first few entries are shown below:</p>
+<pre><code>## # A tibble: 6 x 19
+##   person_id zone      oac_grp sex   age_band number_children household_income
+##       &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   &lt;fct&gt; &lt;fct&gt;              &lt;dbl&gt; &lt;chr&gt;           
+## 1        56 E00056750 8       m     a65over                0 Not Answered    
+## 2        63 E00056750 8       f     a25to34                2 26-30K          
+## 3       261 E00056750 8       m     a25to34                0 26-30K          
+## 4       306 E00056750 8       m     a65over                0 Not Answered    
+## 5       326 E00056750 8       m     a50to64                0 Not Answered    
+## 6       348 E00056750 8       m     a25to34                2 Not Answered    
+## # … with 12 more variables: overseas_airport &lt;chr&gt;, uk_airport &lt;chr&gt;,
+## #   satisfaction_overall &lt;chr&gt;, age_sex &lt;fct&gt;, supergroup_name &lt;chr&gt;,
+## #   dest_airport_name &lt;chr&gt;, dest_airport_city &lt;chr&gt;,
+## #   dest_airport_country &lt;chr&gt;, orig_airport_name &lt;chr&gt;,
+## #   orig_airport_city &lt;chr&gt;, orig_airport_country &lt;chr&gt;, Holiday_type &lt;chr&gt;</code></pre>
+<p>One of the key assumptions made when generating the microsimulated data, was that the data is fully representative, however is this really the case? It is natural that certain output areas in Leeds will be better represented by the individual-level survey, in comparison to others. The figure below demonstrates the model uncertainty, the extent to which oversampling has occurred. Oversampling in this context refers to cases in which the same respondent has been reassigned to the same Output area several times. The figure below demonstrates the distribution of the Output Areas that are not as well represented by the individual-level survey data.</p>
+<div class="figure"><span id="fig:unnamed-chunk-3"></span>
+<img src="Holiday_Destinations_files/figure-html/unnamed-chunk-3-1.png" alt="Simulation Oversampling" width="672" />
+<p class="caption">
+Figure 3.1: Simulation Oversampling
+</p>
+</div>
+<p>By grouping the weights used to generate the microsimulated data, the extent of oversampling can be visualised. There seems to be a higher concentration of oversampling, particularly near the city region and its immediate periphery, as evident by the darker shades of blue in the choropleth map. Similarly given the scope of the report, it would be useful to breakdown the top locations by holiday type. The figure below shows the top destinations by holiday type.</p>
+<div class="figure"><span id="fig:unnamed-chunk-4"></span>
+<img src="Holiday_Destinations_files/figure-html/unnamed-chunk-4-1.png" alt="Top Destinations by Holiday Type" width="960" />
+<p class="caption">
+Figure 3.2: Top Destinations by Holiday Type
+</p>
+</div>
+<p>It seems that the top destinations for beach holidays are Spain, Greece and Egypt. In contrast, and perhaps more importantly given the scope of this report, the top destinations for city holidays are Turkey, Tunisia, and The United States. As outlined in the introduction, we are interested in the city holidays in the United States, which in this case are Orlando, Florida (MCO &amp; SFB) and Las Vegas, Nevada (LAS). Now that we have a clearer idea of our destinations in the United States, we can profile the holidaymakers traveling to these locations. This is discussed in the next section.</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="results.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Holiday_Destinations.pdf", "Holiday_Destinations.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
