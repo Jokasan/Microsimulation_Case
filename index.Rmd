@@ -1,5 +1,5 @@
 --- 
-title: "Predictive Analytics Techniques- Spatial Microsimulation"
+title: "Predictive Analytics Techniques- Spatial Microsimulation to Identify Holidaymaking Behaviours in Leeds"
 author: "Nils Indreiten"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
