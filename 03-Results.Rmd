@@ -51,7 +51,7 @@ plot5 <- temp_plot_data %>%
 plot5
 ```
 
-Expanding upon these findings, it is possible to map the geographical distribution of holidaymakers with the distinguishing characteristics, in this case in the age band 35 to 49, have at least one child, are suburbanites, and were poorly satisfied with their most recent holiday. Unsurprisingly given that the holidaymakers traveling to the destinations of interest are distinctively suburbanites, the figure above shows that they are located towards the peripheries of the study area or in areas that can be considered more suburban. In fact, upon closer inspection, it seems that there are no/close to zero holidaymakers in the city centre and its immediate periphery traveling to the locations of
+Expanding upon these findings, it is possible to map the geographical distribution of holidaymakers with the distinguishing characteristics, in this case in the age band 35 to 49, have at least one child, are suburbanites, and were poorly satisfied with their most recent holiday. Unsurprisingly, given that the holidaymakers traveling to the destinations of interest are distinctively suburbanites, the figure below shows that they are located towards the peripheries of the study area or in areas that can be considered more suburban. In fact, upon closer inspection, it seems that there are no/close to zero holidaymakers in the city centre and its immediate periphery traveling to the locations of
 interest.
 
 ```{r,echo=FALSE, fig.width=10, fig.height=10, message=FALSE, warning=FALSE, fig.cap="Geographical Distribution of Target Market"}
