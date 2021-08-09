@@ -38,7 +38,7 @@ head(simulated_oac_age_sex)
 
 One of the key assumptions made when generating the microsimulated data, was that the data is fully representative, however is this really the case? It is natural that certain output areas in Leeds will be better represented by the individual-level survey, in comparison to others. The figure below demonstrates the model uncertainty, the extent to which oversampling has occurred. Oversampling in this context refers to cases in which the same respondent has been reassigned to the same Output area several times. The figure below demonstrates the distribution of the Output Areas that are not as well represented by the individual-level survey data.
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=10, fig.cap="Simulation Oversampling"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Simulation Oversampling"}
 # Generate OA-level summary statistics on weights.
 temp_weights_summary <- weights_oac_age_sex %>%
   # Create row_index variable.
