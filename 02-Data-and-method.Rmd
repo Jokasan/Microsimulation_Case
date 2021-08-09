@@ -1,0 +1,163 @@
+# Methods
+
+## Data and methods
+
+The microsimulated data contains, 19 variables, 1 of which was determined after generating the microsimulated data (Holiday_type). This is not explicitly defined in the microsimulated data, therefore there are some assumptions that were made to classify the Holiday destinations as either a city or beach, for instance, geographical proximity of the destination airport city to a beach, in this case geographical proximity was considered a proxy for holiday type. As such, out of the 75 unique holiday destinations, 61 are beach holidays and 14 are city holidays. Person_id is a variable describing the unique id of each person in the study area. Zone is a geographical variable that contains the output are classification in Leeds. Oac_group describes the output area classification groups that a person belongs to, the classifications are: “Urbanites”, “Suburbanites”, “Rural Residents”, “Multicultural Metropolitans”, “Hard-pressed Living”, “Ethnicity Central”, “Cosmopolitans” and “Constrained City Dwellers”, but as a factor containing 8 levels each corresponding to a supergroup. The Sex variables describes the sex of the individual, it is either “f” for female or “m” for male. Age_band refers to the age bracket that the individual belongs to, it ranges from “a24under” to “a65over”. Number_children refers to the number of children that the individual has, it ranges from 0 to 4. Household_income refers to the household income of each household, it ranges from “0-10K”, to “81K Plus”, and includes a “Not Answered” category. Overseas_airport refers to the name of the overseas airport the holidaymaker is traveling to. UK_airport refers to the name of the UK airport the holidaymaker is traveling from. Satisfaction_overall, refers to how satisfied the holidaymaker was with their most recent holiday, it ranges from “1_poor” to “4_excellent”. Age_sex refers to a combination of the Sex and Age_band variables, so for instance a female aged between 24-34 would be: “fa24to34”, in contrast a male in the same age bracket would be: “ma24to34”. Similar to Oac_group, the Supergroup_name contains the output area classification group names, however not as factors, but rather, as characters. Dest_airport_name refers to the name of the airport the holidaymakers is traveling to. Dest_airport_city refers to the name of the city the destination airport is in. Dest_airport_country refers to the name of the country the holidaymaker is traveling to. Orig_airport_name refers to the name of the airport the holidaymaker is traveling from. Orig_airport_city refers to the name of the city the origin airport is in. Finally, Holiday_type refers to the type of holiday, classified as either “Beach” or “City” holiday. This is summarised below
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(kableExtra)
+data_overview <- tribble(
+  ~Variable, ~Detail,
+  "Person_id", "Unique id of respondentaccross the study area.",
+  "Zone", "The output area classification zone in Leeds.",
+  "Oac_grp", "Description of the super group the output area belongs to.",
+  "Sex", "Sex of the respondent",
+  "Age_band", "Age band the respondent belongs to.",
+  "Number_children", "The number of children the respondent has",
+  "Household_income", "The household income of each respndent",
+  "Overseas_airport", "The name of the overseas airport.",
+  "UK_airport", "Name of the airport in the UK.",
+  "Satisafaction_overall","Level of satisfaction with most recent holiday.",
+  "Age_sex", "A combination of the sex and age band variables.",
+  "Supergroup_name", "The name of the supergroup the respondent belongs to.",
+  "Dest_airport_name", "The name of the destination airport.",
+  "Dest_airport_city","The name of the city the destination airport is in.",
+  "Dest_airport_country","The name of the country the destination airport is in.",
+  "Orig_airport_name","The name of the origin airport.",
+  "Orig_airport_city","The name of the city the origin airport is in.",
+  "Holiday_type", "The name of the city the origin airport is in in.")
+kable(data_overview, "html") %>% 
+ kable_styling(full_width=F)
+```
+
+To get a sense of the nature of the data, the first few entries are shown below:
+
+```{r, echo=FALSE}
+head(simulated_oac_age_sex)
+```
+
+One of the key assumptions made when generating the microsimulated data, was that the data is fully representative, however is this really the case? It is natural that certain output areas in Leeds will be better represented by the individual-level survey, in comparison to others. The figure below demonstrates the model uncertainty, the extent to which oversampling has occurred. Oversampling in this context refers to cases in which the same respondent has been reassigned to the same Output area several times. The figure below demonstrates the distribution of the Output Areas that are not as well represented by the individual-level survey data.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=10, fig.cap="Simulation Oversampling"}
+# Generate OA-level summary statistics on weights.
+temp_weights_summary <- weights_oac_age_sex %>%
+  # Create row_index variable.
+  mutate(row_index=row_number()) %>%
+  # Rather than a matrix, we want a row for each individual and OA.
+  gather(key=oa_code, value=weight, -row_index) %>%
+  group_by(oa_code) %>%
+  filter(weight>0) %>%
+  summarise(weight_mean=mean(weight), weight_max=max(weight), weight_sd=sd(weight)) %>%
+  ungroup()
+
+# Generate OA-level summary statistics on simulated data.
+temp_simulated_summary <- simulated_oac_age_sex %>%
+  group_by(zone) %>%
+  summarise(distinct_persons=n_distinct(person_id), total_person=n(),
+  sim_oversample=1-(distinct_persons/total_person)) %>%
+  select(zone, sim_oversample)
+
+# Merge and gather for charting.
+oa_level_summary <- temp_weights_summary %>%
+  inner_join(temp_simulated_summary, by=c("oa_code"="zone")) %>%
+  gather(key="statistic_type", value="statistic_value",-oa_code)
+
+# Set up plot
+plot_data <- oa_level_summary %>%
+  group_by(statistic_type) %>%
+  mutate(
+    # Rescale summary stats between 0 and 1 for local scale on facet.
+    statistic_value_rescale=scales::rescale(statistic_value, to=c(0,1), from=c(min(statistic_value), max(statistic_value))),
+    # Cut into equal-range bins as per histogram.
+    statistic_value_bin=cut_interval(statistic_value_rescale, 10, labels=FALSE)
+  ) %>%
+  ungroup()
+# Merge with oa_boundaries for plotting.
+plot1 <- oa_boundaries %>%
+  left_join(plot_data) %>%
+  ggplot()+
+    geom_sf(aes(fill=statistic_value_bin), colour=NA)+
+    geom_sf(data=ward_boundaries, fill="transparent", colour="#636363", size=0.1)+
+    coord_sf(crs=st_crs(oa_boundaries), datum=NA)+
+    scale_fill_distiller(palette="Blues", direction=1, guide=FALSE)+
+    theme(axis.title=element_blank())+
+    facet_wrap(~statistic_type, nrow=1)+theme_minimal()
+# create plot
+plot2 <- oa_level_summary %>%
+  # Rescale summary stats between 0 and 1 for local scale on facet.
+  group_by(statistic_type) %>%
+  mutate(
+    statistic_value_rescale=
+      scales::rescale(statistic_value, to=c(0,1), from=c(min(statistic_value), max(statistic_value)))
+    ) %>%
+  ungroup() %>%
+  ggplot(aes(x=statistic_value_rescale, fill=..x..))+
+  geom_histogram(colour="#636363", size=0.1, bins=10) +
+  facet_wrap(~statistic_type, nrow=1) +
+  scale_fill_distiller(palette="Blues", direction=1, guide=FALSE)+ ylab("")+ xlab("")+theme_void()
+# Display in plots pane.
+grid.arrange(plot1,plot2, nrow=2)
+```
+
+By grouping the weights used to generate the microsimulated data, the extent of oversampling can be visualised. There seems to be a higher concentration of oversampling, particularly near the city region and its immediate periphery, as evident by the darker shades of blue in the choropleth map. Similarly given the scope of the report, it would be useful to breakdown the top locations by holiday type. The figure below shows the top destinations by holiday type.
+
+```{r, echo=FALSE, fig.height=10, fig.width=10, fig.cap="Top Destinations by Holiday Type"}
+# Generate tibble of countries ordered by frequency (for ordered factors).
+order_country <- simulated_oac_age_sex %>%
+  filter(Holiday_type=="Beach") %>% 
+  group_by(dest_airport_country) %>%
+  summarise(count=n()) %>%
+  arrange(-count)
+
+# Cleveland dot plot of destinations, grouped by country.
+plot3 <- simulated_oac_age_sex %>%
+  filter(Holiday_type=="Beach") %>% 
+  # Order dest countries, casting as a factor and ordering levels on frequency.
+  mutate(dest_airport_country=factor(dest_airport_country,levels=order_country$dest_airport_country)) %>%
+  # Calculate num holidays to each dest airport.
+  group_by(overseas_airport) %>%
+    summarise(count_airport=n(), dest_airport_country=first(dest_airport_country)) %>%
+    # Order by these frequencies.
+    arrange(count_airport) %>%
+    # Cast as factor and order levels.
+    mutate(overseas_airport=factor(overseas_airport,levels=.$overseas_airport)) %>%
+  # List airports vertically and frequencies horizontally.
+  ggplot(aes(x=count_airport,y=overseas_airport))+
+    geom_segment(aes(x=0, y=overseas_airport, xend=count_airport, yend=overseas_airport), colour="#636363")+
+    geom_point(colour="#636363", fill="#cccccc", shape=21)+
+    # Facet the plot on country to display group freq by destination country.
+    facet_grid(dest_airport_country~., scales="free_y", space="free_y")+theme_minimal()+theme(
+   strip.text.y = element_text(angle=0))+ggtitle("Beach Holidays")+scale_x_continuous()+ylab("Overseas Airport")+xlab("")
+
+### do the same for holiday type city:
+order_country_ <- simulated_oac_age_sex %>%
+  filter(Holiday_type=="City") %>% 
+  group_by(dest_airport_country) %>%
+  summarise(count=n()) %>%
+  arrange(-count)
+
+# Cleveland dot plot of destinations, grouped by country.
+plot4 <- simulated_oac_age_sex %>%
+  filter(Holiday_type=="City") %>% 
+  # Order dest countries, casting as a factor and ordering levels on frequency.
+  mutate(dest_airport_country=factor(dest_airport_country,levels=order_country_$dest_airport_country)) %>%
+  # Calculate num holidays to each dest airport.
+  group_by(overseas_airport) %>%
+    summarise(count_airport=n(), dest_airport_country=first(dest_airport_country)) %>%
+    # Order by these frequencies.
+    arrange(count_airport) %>%
+    # Cast as factor and order levels.
+    mutate(overseas_airport=factor(overseas_airport,levels=.$overseas_airport)) %>%
+  # List airports vertically and frequencies horizontally.
+  ggplot(aes(x=count_airport,y=overseas_airport))+
+    geom_segment(aes(x=0, y=overseas_airport, xend=count_airport, yend=overseas_airport), colour="#636363")+
+    geom_point(colour="#636363", fill="#cccccc", shape=21)+
+    # Facet the plot on country to display group freq by destination country.
+    facet_grid(dest_airport_country~., scales="free_y", space="free_y")+theme_minimal()+theme(
+   strip.text.y = element_text(angle=0))+ ggtitle("City Holidays")+ylab("")+xlab("")
+
+# Display both plots together:
+grid.arrange(plot3,plot4, ncol=2)
+```
+
+It seems that the top destinations for beach holidays are Spain, Greece and Egypt. In contrast, and perhaps more importantly given the scope of this report, the top destinations for city holidays are Turkey, Tunisia, and The United States. As outlined in the introduction, we are interested in the city holidays in the United States, which in this case are Orlando, Florida (MCO & SFB) and Las Vegas, Nevada (LAS). Now that we have a clearer idea of our destinations in the United States, we can profile the holidaymakers traveling to these locations. This is discussed in the next section.
